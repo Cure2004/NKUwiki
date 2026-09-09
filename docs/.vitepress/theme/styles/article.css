@@ -266,11 +266,11 @@
 }
 
 .heading-wordmark::before {
-	content: "";
+	content: "NKU";
 }
 
 .heading-wordmark::after {
-	content: "";
+	content: "Wiki";
 	color: var(--vp-c-brand-1);
 }
 
