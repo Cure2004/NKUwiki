@@ -274,6 +274,11 @@
 	color: var(--vp-c-brand-1);
 }
 
+/* h2 里如果有多个 wordmark span，只保留第一个，其余隐藏 */
+.vp-doc > div > h2 > .heading-wordmark + .heading-wordmark {
+  display: none;
+}
+
 .vp-doc > div > h3::before {
 	content: "";
 	display: inline-block;
