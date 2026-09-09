@@ -79,7 +79,7 @@
 	width: 28px;
 	height: 28px;
 	margin-right: 8px;
-	color: var(--vp-c-brand-1);
+	object-fit: contain;
 }
 
 .directory-trigger {

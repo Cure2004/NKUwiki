@@ -2,7 +2,7 @@
 import timeIcon from '@iconify-icons/ri/time-line'
 import userIcon from '@iconify-icons/ri/user-line'
 import { Icon } from '@iconify/vue'
-import { useData } from 'vitepress'
+import { useData, withBase } from 'vitepress'
 import { computed } from 'vue'
 import { tagChips } from '../chips'
 import WikiChips from './WikiChips.vue'
@@ -18,7 +18,7 @@ const date = computed(() => page.value.lastUpdated ? new Date(page.value.lastUpd
 	<nav v-if="fm.breadcrumbs?.length" class="article-breadcrumbs" aria-label="文章所在目录">
 		<ol>
 			<li v-for="category in fm.breadcrumbs" :key="category">
-				<a :href="`/NKUwiki/categories/?category=${encodeURIComponent(category)}`">{{ category }}</a>
+				<a :href="withBase(`/categories/?category=${encodeURIComponent(category)}`)">{{ category }}</a>
 			</li>
 		</ol>
 	</nav>

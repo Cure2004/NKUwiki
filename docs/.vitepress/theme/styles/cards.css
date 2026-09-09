@@ -100,9 +100,10 @@
 	color: var(--vp-c-brand-1);
 }
 
-.card-avatar-fallback svg {
-	margin-top: 1rem;
-	font-size: 3rem;
+.card-avatar-fallback img {
+	width: 3rem;
+	height: 3rem;
+	object-fit: contain;
 }
 
 .card-blur {

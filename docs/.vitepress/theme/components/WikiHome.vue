@@ -1,6 +1,10 @@
 <script setup lang="ts">
 // ================= 数据来源 =================
 
+import { withBase } from 'vitepress'
+
+import { repoUrl, siteUrl } from '../../site'
+
 // catalog.data.ts 是 VitePress 的 data loader（.data.ts）：
 // 在开发与构建时会扫描 docs/ 下各编号目录中的 Markdown 文章，
 // 汇总出 data.articles（文章列表）、data.tree（目录树）、
@@ -14,7 +18,7 @@ import { tagChips } from '../chips'
 
 // 下面是首页用到的内部展示组件：
 // ArticleByline —— 文章的日期 / 作者信息行；
-// QrCode —— 生成二维码；SiteIcon —— 校徽图标；
+// QrCode —— 生成二维码；SiteIcon —— 站点徽标；
 // WikiChips —— 渲染一组可点击的标签胶囊。
 import ArticleByline from './ArticleByline.vue'
 import QrCode from './QrCode.vue'
@@ -62,7 +66,7 @@ const latest = [...data.articles].sort((a, b) => b.updatedTime - a.updatedTime |
 			</p>
 			<!-- 主要行动按钮：跳转新生指南；第二个链接前往文章分类索引页 /categories/ -->
 			<div class="hero-actions">
-				<a class="primary" href="/NKUwiki/pages/Preparation">阅读新生指南 <span aria-hidden="true">↗</span></a><a href="/NKUwiki/categories/">浏览全部目录 →</a>
+				<a class="primary" :href="withBase('/pages/Preparation')">阅读新生指南 <span aria-hidden="true">↗</span></a><a :href="withBase('/categories/')">浏览全部目录 →</a>
 			</div>
 		</div>
 		<!-- Hero 右侧小卡片：校徽、校区范围、由 data loader 统计的条目总数、一句话定位 -->
@@ -81,17 +85,17 @@ const latest = [...data.articles].sort((a, b) => b.updatedTime - a.updatedTime |
 					<!-- aria-labelledby 让标题与本节语义关联，便于读屏器识别 -->
 					<h2 id="topics-title">
 						探索专题
-					</h2><a href="/NKUwiki/categories/">全部目录 →</a>
+					</h2><a :href="withBase('/categories/')">全部目录 →</a>
 				</div>
 				<div class="topic-grid">
 					<!-- 动态专题卡片：v-for 遍历 topics 并解构出 [name, desc]；
 					href 优先使用 topicLinks 的 slug，映射不到的专题回退到贡献指南页 -->
-					<a v-for="[name, desc] in topics" :key="name" class="topic-card" :href="topicLinks[name] ? `/NKUwiki/topics/${topicLinks[name]}/` : '/NKUwiki/pages/BasicContribution/'">
+					<a v-for="[name, desc] in topics" :key="name" class="topic-card" :href="topicLinks[name] ? withBase(`/topics/${topicLinks[name]}/`) : withBase('/pages/BasicContribution/')">
 						<h3>{{ name }}</h3><p>{{ desc }}</p><span class="topic-arrow" aria-hidden="true">↗</span>
 					</a>
 					<!-- 友情链接作为一张特殊卡片排在网格末尾（community-card 样式），
 					指向 docs/10.贡献与其他/10.友情链接.md 生成的页面 -->
-					<a class="topic-card community-card" href="/NKUwiki/pages/FriendshipLinks/"><h3>友情链接</h3><p>校园墙、咨询与兄弟院校</p><span class="topic-arrow" aria-hidden="true">↗</span></a>
+					<a class="topic-card community-card" :href="withBase('/pages/FriendshipLinks/')"><h3>友情链接</h3><p>校园墙、咨询与兄弟院校</p><span class="topic-arrow" aria-hidden="true">↗</span></a>
 				</div>
 			</section>
 
@@ -103,11 +107,11 @@ const latest = [...data.articles].sort((a, b) => b.updatedTime - a.updatedTime |
 				<p>欢迎补充。分享资料时，请注明校区等信息。</p>
 				<!-- 次级 CTA：了解贡献流程 / 到 GitHub 反馈问题 -->
 				<div class="hero-actions">
-					<a class="primary" href="/NKUwiki/pages/BasicContribution/">了解如何贡献</a><a href="https://github.com/Cure2004/NKU_Wiki/issues">反馈问题 →</a>
+					<a class="primary" :href="withBase('/pages/BasicContribution/')">了解如何贡献</a><a :href="`${repoUrl}/issues`">反馈问题 →</a>
 				</div>
 				<!-- 快捷入口：分类页、课程评价、内推信息与贡献者列表 -->
 				<div class="community-links">
-					<a href="https://github.com/Cure2004/NKU_Wiki/graphs/contributors">感谢所有贡献者 ↗</a>
+					<a :href="`${repoUrl}/graphs/contributors`">感谢所有贡献者 ↗</a>
 				</div>
 			</section>
 
@@ -123,11 +127,11 @@ const latest = [...data.articles].sort((a, b) => b.updatedTime - a.updatedTime |
 				显示标题，并由 ArticleByline 展示 updated 日期与 author -->
 			<section>
 				<div class="section-heading">
-					<h2>最近更新</h2><a href="/NKUwiki/archives/">更多 →</a>
+					<h2>最近更新</h2><a :href="withBase('/archives/')">更多 →</a>
 				</div>
 				<ol class="recent-list">
 					<li v-for="article in latest" :key="article.url">
-						<a :href="`/NKUwiki${article.url}`">{{ article.title }}</a>
+						<a :href="withBase(article.url)">{{ article.title }}</a>
 						<ArticleByline :date="article.updated" :author="article.author" />
 					</li>
 				</ol>
@@ -136,14 +140,14 @@ const latest = [...data.articles].sort((a, b) => b.updatedTime - a.updatedTime |
 				这里取前 12 个，再经 tagChips 转成可点击的标签胶囊 -->
 			<section>
 				<div class="section-heading">
-					<h2>热门标签</h2><a href="/NKUwiki/tags/">全部 →</a>
+					<h2>热门标签</h2><a :href="withBase('/tags/')">全部 →</a>
 				</div><WikiChips :items="tagChips(data.tags.slice(0, 12))" label="热门标签" />
 			</section>
 			<!-- 联系我们：两个 QQ 群、GitHub 仓库，以及手机访问的二维码（直接展示，无下拉） -->
 			<section>
-				<h2>联系我们</h2><p>聊天交流 QQ 群 <strong>XXXXXXXX</strong><br>编辑贡献 QQ 群 <strong>1108024910</strong></p><a href="https://github.com/Cure2004/NKU_Wiki">GitHub ↗</a>
+				<h2>联系我们</h2><p>聊天交流 QQ 群 <strong>XXXXXXXX</strong><br>编辑贡献 QQ 群 <strong>1108024910</strong></p><a :href="repoUrl">GitHub ↗</a>
 				<div class="qr-details">
-					<span>手机访问本站</span><QrCode src="https://cure2004.github.io/NKU_Wiki/" label="NKUwiki 网站二维码" />
+					<span>手机访问本站</span><QrCode :src="`${siteUrl}/`" label="NKUwiki 网站二维码" />
 				</div>
 			</section>
 		</aside>

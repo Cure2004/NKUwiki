@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import school from '@iconify-icons/ri/graduation-cap-line'
-import { Icon } from '@iconify/vue'
+import { withBase } from 'vitepress'
 </script>
 
 <template>
-<Icon :icon="school" aria-hidden="true" />
+<img :src="withBase('/img/logo.svg')" alt="" aria-hidden="true">
 </template>

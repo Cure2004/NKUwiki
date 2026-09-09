@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ChipItem } from '../chips'
+import { withBase } from 'vitepress'
 
 defineProps<{ items: ChipItem[], selected?: string, label?: string }>()
 defineEmits<{ select: [value: string] }>()
@@ -12,7 +13,7 @@ defineEmits<{ select: [value: string] }>()
 		v-for="item in items"
 		:key="item.value ?? item.text"
 		class="chip"
-		:href="item.href ? `/NKUwiki${item.href}` : undefined"
+		:href="item.href ? withBase(item.href) : undefined"
 		:type="item.href ? undefined : 'button'"
 		:aria-pressed="item.href ? undefined : selected === item.value"
 		@click="!item.href && $emit('select', item.value ?? item.text)"

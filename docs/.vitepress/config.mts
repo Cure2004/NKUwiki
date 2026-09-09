@@ -1,10 +1,13 @@
+import type { MarkdownRenderer } from 'vitepress'
 import { fileURLToPath } from 'node:url'
 import markmapPlugin from '@vitepress-plugin/markmap'
 import { defineConfig } from 'vitepress'
 import { cardlist } from './cardlist.ts'
 import { buildTree, outputPath, scanArticles } from './catalog.ts'
+import { repoUrl, siteUrl } from './site.ts'
 
 const articles = scanArticles()
+const base = '/NKUwiki/'
 function topicMatch(slug: string, ...folders: string[]) {
 	const escape = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 	const paths = articles.filter(article => folders.includes(article.folders[0])).flatMap(article => [article.url.replace(/\/$/, ''), `/${article.source.replace(/\.md$/, '')}`]).map(escape)
@@ -16,7 +19,7 @@ const sidebar = Object.fromEntries(articles.map(article => [article.url, [
 ]]))
 
 export default defineConfig({
-	base: '/NKUwiki/',
+	base,
 	lang: 'zh-CN',
 	title: 'NKUwiki',
 	description: '南开大学学生共同维护的非官方校园知识库。',
@@ -26,10 +29,10 @@ export default defineConfig({
 	head: [
 		['link', { rel: 'stylesheet', href: 'https://s4.zstatic.net/npm/inter-ui@4.1.1/inter-variable.css' }],
 		['link', { rel: 'stylesheet', href: 'https://s4.zstatic.net/npm/inter-ui@4.1.1/inter.css' }],
-		['link', { 'rel': 'icon', 'type': 'image/svg+xml', 'href': '/favicon-light.svg', 'media': '(prefers-color-scheme: light)', 'data-wiki-icon': '' }],
-		['link', { 'rel': 'icon', 'type': 'image/svg+xml', 'href': '/favicon-dark.svg', 'media': '(prefers-color-scheme: dark)', 'data-wiki-icon': '' }],
+		['link', { 'rel': 'icon', 'type': 'image/svg+xml', 'href': `${base}favicon-light.svg`, 'media': '(prefers-color-scheme: light)', 'data-wiki-icon': '' }],
+		['link', { 'rel': 'icon', 'type': 'image/svg+xml', 'href': `${base}favicon-dark.svg`, 'media': '(prefers-color-scheme: dark)', 'data-wiki-icon': '' }],
 	],
-	sitemap: { hostname: 'https://cure2004.github.io/NKUwiki' },
+	sitemap: { hostname: siteUrl },
 	themeConfig: {
 		nav: [
 			{ text: '新生入学', link: '/topics/newcomers/', activeMatch: topicMatch('newcomers', '新生入学') },
@@ -58,7 +61,7 @@ export default defineConfig({
 				modal: { displayDetails: '显示详情', resetButtonTitle: '清除搜索', backButtonTitle: '关闭搜索', noResultsText: '没有找到相关结果', footer: { selectText: '选择', navigateText: '切换', closeText: '关闭' } },
 			} } },
 		} },
-		socialLinks: [{ icon: 'github', link: 'https://github.com/Cure2004/NKUwiki' }],
+		socialLinks: [{ icon: 'github', link: repoUrl }],
 		externalLinkIcon: true,
 		langMenuLabel: '切换语言',
 		sidebarMenuLabel: '专题目录',
@@ -68,13 +71,18 @@ export default defineConfig({
 		returnToTopLabel: '返回顶部',
 		outline: { level: [2, 3], label: '本页目录' },
 		docFooter: { prev: '上一篇', next: '下一篇' },
-		editLink: { pattern: 'https://github.com/Cure2004/NKUwiki/blame/main/docs/:path', text: '源代码' },
+		editLink: { pattern: `${repoUrl}/blame/main/docs/:path`, text: '源代码' },
 		lastUpdated: { text: '最后更新于', formatOptions: { dateStyle: 'medium' } },
 		footer: { message: '由南开大学学生共同维护的非官方校园知识库', copyright: `© 2026–${new Date().getFullYear()} NKU_Wiki-Group · MIT License` },
 	},
-	vite: { base: '/NKUwiki', plugins: [markmapPlugin({ containerHeight: 500 })], resolve: { alias: { '@': fileURLToPath(new URL('./', import.meta.url)) } } },
+	vite: { base, plugins: [markmapPlugin({ containerHeight: 500 })], resolve: { alias: { '@': fileURLToPath(new URL('./', import.meta.url)) } } },
 	markdown: {
 		config: (md) => {
+			// VitePress 生产构建会对同一实例重复应用本配置，重入会嵌套包裹 renderer 规则（水印出现两份）
+			const instance = md as MarkdownRenderer & { configured?: boolean }
+			if (instance.configured)
+				return
+			instance.configured = true
 			cardlist(md)
 			const headingClose = md.renderer.rules.heading_close
 			md.renderer.rules.heading_close = (tokens, index, options, env, self) => {

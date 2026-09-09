@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useData } from 'vitepress'
+import { useData, withBase } from 'vitepress'
 import DefaultTheme from 'vitepress/theme-without-fonts'
 import { onMounted, watch } from 'vue'
 import ArticleMeta from './ArticleMeta.vue'
@@ -8,7 +8,7 @@ import SiteIcon from './SiteIcon.vue'
 const { isDark } = useData()
 onMounted(() => {
 	watch(isDark, (dark) => {
-		document.querySelectorAll<HTMLLinkElement>('link[data-wiki-icon]').forEach(link => link.href = dark ? '/favicon-dark.svg' : '/favicon-light.svg')
+		document.querySelectorAll<HTMLLinkElement>('link[data-wiki-icon]').forEach(link => link.href = withBase(dark ? '/favicon-dark.svg' : '/favicon-light.svg'))
 	}, { immediate: true })
 })
 </script>
@@ -19,7 +19,7 @@ onMounted(() => {
 		<SiteIcon class="site-icon" />
 	</template>
 	<template #sidebar-nav-before>
-		<a class="directory-trigger" href="/categories/">全部目录</a>
+		<a class="directory-trigger" :href="withBase('/categories/')">全部目录</a>
 	</template>
 	<template #doc-before>
 		<ArticleMeta />

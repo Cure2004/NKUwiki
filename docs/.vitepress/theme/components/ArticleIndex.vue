@@ -3,6 +3,7 @@ import type { Article, IndexMode } from '../../types'
 import gridIcon from '@iconify-icons/ri/grid-line'
 import listIcon from '@iconify-icons/ri/list-check'
 import { Icon } from '@iconify/vue'
+import { withBase } from 'vitepress'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { data } from '../catalog.data'
 import { tagChips } from '../chips'
@@ -88,7 +89,7 @@ const groups = computed(() => {
 		<ul class="article-list" :class="{ 'article-cards': view === 'cards' }">
 			<li v-for="article in list" :key="article.url">
 				<div class="index-item-content">
-					<a class="article-title" :href="`/NKUwiki${article.url}`">{{ article.title }}</a>
+					<a class="article-title" :href="withBase(article.url)">{{ article.title }}</a>
 					<WikiChips :items="tagChips(article.tags)" class="tags" label="文章标签" />
 				</div>
 				<ArticleByline :date="article.updated" :author="article.author" />

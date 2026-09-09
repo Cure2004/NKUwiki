@@ -27,6 +27,14 @@ pnpm build    # 生产构建，检查 Markdown 内部链接
 pnpm preview  # 预览生产产物
 ```
 
+### 推荐工作流
+
+1. 写作与排版：`pnpm dev`，浏览器打开 `http://localhost:5173/NKUwiki/`，保存即热更新。
+2. 发布前验证：`pnpm build && pnpm preview`，打开 `http://localhost:4173/NKUwiki/` 查看与线上一致的生产产物。水印重复、图片 404 这类只在构建产物中暴露的问题，务必在这里确认后再推送。
+3. 确认无误后提交推送，GitHub Actions 自动构建并发布到 GitHub Pages；发往 `main` 的 PR 上 CI 也会自动运行 `pnpm check` 和 `pnpm build` 兜底。
+
+需要在手机或局域网内其他设备上预览时，执行 `pnpm preview --host`（开发模式同理为 `pnpm dev --host`），然后用该设备访问 `http://<电脑局域网IP>:4173/NKUwiki/`。只有需要把未合并的内容分享给无法访问你电脑的其他人时，才需要额外的线上预览站点。
+
 产物位于 `docs/.vitepress/dist/`。GitHub Actions 使用锁文件安装依赖，构建后发布到 GitHub Pages；域名由 `docs/public/CNAME` 保留。
 
 依赖版本直接维护在 `package.json`；`pnpm-workspace.yaml` 只保留安装脚本白名单等 pnpm 设置。提交 `pnpm-lock.yaml` 保证 CI 安装一致。样式检查参考 [homepage-v5](https://github.com/L33Z22L11/homepage-v5)，由 `@zinkawaii/eslint-config-css` 接入 ESLint 统一处理。`pnpm lint:fix` 可自动修复格式问题。TypeScript 严格检查主题和索引代码；历史 Markdown 示例不参与 ESLint，由生产构建校验。

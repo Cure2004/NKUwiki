@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useData } from 'vitepress'
 import { onBeforeUnmount, ref } from 'vue'
+import { siteUrl } from '../../site'
 
 const { page } = useData()
 const dialog = ref<HTMLDialogElement>()
@@ -33,7 +34,7 @@ async function generate() {
 		if (!source)
 			throw new Error('找不到文章内容')
 		const { createShareImage } = await import('../share-image')
-		const url = new URL(window.location.pathname, 'https://wiki.ncepuinfo.cc').href
+		const url = new URL(window.location.pathname, siteUrl).href
 		const blob = await createShareImage(source, page.value.title, url, mode.value === 'card')
 		if (current === request)
 			preview.value = URL.createObjectURL(blob)

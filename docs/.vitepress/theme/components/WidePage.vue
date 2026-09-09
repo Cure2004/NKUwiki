@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useData } from 'vitepress'
+import { repoUrl } from '../../site'
 import ArticleMeta from './ArticleMeta.vue'
 
 const { page } = useData()
@@ -12,7 +13,7 @@ const { page } = useData()
 		<Content />
 	</div>
 	<footer class="wide-footer">
-		<a :href="`https://github.com/Cure2004/NKU_Wiki/blame/main/docs/${page.filePath}`">源代码</a>
+		<a :href="`${repoUrl}/blame/main/docs/${page.filePath}`">源代码</a>
 		<time v-if="page.lastUpdated" :datetime="new Date(page.lastUpdated).toISOString()">内容日期：{{ new Date(page.lastUpdated).toISOString().slice(0, 10) }}</time>
 	</footer>
 </main>
