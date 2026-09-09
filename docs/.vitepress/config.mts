@@ -1,0 +1,97 @@
+import { fileURLToPath } from 'node:url'
+import markmapPlugin from '@vitepress-plugin/markmap'
+import { defineConfig } from 'vitepress'
+import { cardlist } from './cardlist.ts'
+import { buildTree, outputPath, scanArticles } from './catalog.ts'
+
+const articles = scanArticles()
+function topicMatch(slug: string, ...folders: string[]) {
+	const escape = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+	const paths = articles.filter(article => folders.includes(article.folders[0])).flatMap(article => [article.url.replace(/\/$/, ''), `/${article.source.replace(/\.md$/, '')}`]).map(escape)
+	return `^(?:/topics/(?:${slug})|${paths.join('|')})/?$`
+}
+const rewrites = new Map(articles.map(article => [article.source, outputPath(article.url)]))
+const sidebar = Object.fromEntries(articles.map(article => [article.url, [
+	...buildTree(articles.filter(other => other.folders[0] === article.folders[0])),
+]]))
+
+export default defineConfig({
+	base: '/NKUwiki/',
+	lang: 'zh-CN',
+	title: 'NKUwiki',
+	description: '南开大学学生共同维护的非官方校园知识库。',
+	cleanUrls: true,
+	lastUpdated: true,
+	rewrites: source => rewrites.get(source) || source,
+	head: [
+		['link', { rel: 'stylesheet', href: 'https://s4.zstatic.net/npm/inter-ui@4.1.1/inter-variable.css' }],
+		['link', { rel: 'stylesheet', href: 'https://s4.zstatic.net/npm/inter-ui@4.1.1/inter.css' }],
+		['link', { 'rel': 'icon', 'type': 'image/svg+xml', 'href': '/favicon-light.svg', 'media': '(prefers-color-scheme: light)', 'data-wiki-icon': '' }],
+		['link', { 'rel': 'icon', 'type': 'image/svg+xml', 'href': '/favicon-dark.svg', 'media': '(prefers-color-scheme: dark)', 'data-wiki-icon': '' }],
+	],
+	sitemap: { hostname: 'https://cure2004.github.io/NKUwiki' },
+	themeConfig: {
+		nav: [
+			{ text: '新生入学', link: '/topics/newcomers/', activeMatch: topicMatch('newcomers', '新生入学') },
+			{ text: '浅谈学习', link: '/topics/study/', activeMatch: topicMatch('study', '浅谈学习') },
+			{ text: '校园生活', link: '/topics/life/', activeMatch: topicMatch('life', '校园生活') },
+			{ text: '群汇总', link: '/topics/groups/', activeMatch: topicMatch('groups', '群汇总') },
+			{ text: '全部目录', link: '/categories/' },
+			{ text: '探索', activeMatch: `${topicMatch('computing', '计算机知识专题')}|^/(categories|tags|archives)(/|$)`, items: [
+				{ text: '文章分类', link: '/categories/' },
+				{ text: '标签', link: '/tags/' },
+				{ text: '最近更新', link: '/archives/' },
+			] },
+			{ text: '参与共建', link: '/pages/BasicContribution/', activeMatch: topicMatch('contribute', '贡献与其他') },
+		],
+		sidebar,
+		search: { provider: 'local', options: {
+			async _render(source, env, md) {
+				const article = articles.find(item => item.source === env.relativePath || outputPath(item.url) === env.relativePath)
+				const html = await md.renderAsync(source, env)
+				if (!article || article.hasHeading)
+					return html
+				return `<h1 id="article-title">${md.utils.escapeHtml(article.title)}</h1>\n${html}`
+			},
+			locales: { root: { translations: {
+				button: { buttonText: '搜索文档', buttonAriaLabel: '搜索文档' },
+				modal: { displayDetails: '显示详情', resetButtonTitle: '清除搜索', backButtonTitle: '关闭搜索', noResultsText: '没有找到相关结果', footer: { selectText: '选择', navigateText: '切换', closeText: '关闭' } },
+			} } },
+		} },
+		socialLinks: [{ icon: 'github', link: 'https://github.com/Cure2004/NKU_Wiki' }],
+		externalLinkIcon: true,
+		langMenuLabel: '切换语言',
+		sidebarMenuLabel: '专题目录',
+		darkModeSwitchLabel: '主题',
+		lightModeSwitchTitle: '切换到浅色模式',
+		darkModeSwitchTitle: '切换到深色模式',
+		returnToTopLabel: '返回顶部',
+		outline: { level: [2, 3], label: '本页目录' },
+		docFooter: { prev: '上一篇', next: '下一篇' },
+		editLink: { pattern: 'https://github.com/Cure2004/NKU_Wiki/blame/main/docs/:path', text: '源代码' },
+		lastUpdated: { text: '最后更新于', formatOptions: { dateStyle: 'medium' } },
+		footer: { message: '由南开大学学生共同维护的非官方校园知识库', copyright: `© 2026–${new Date().getFullYear()} NKU_Wiki-Group · MIT License` },
+	},
+	vite: { base: '/NKUwiki', plugins: [markmapPlugin({ containerHeight: 500 })], resolve: { alias: { '@': fileURLToPath(new URL('./', import.meta.url)) } } },
+	markdown: {
+		config: (md) => {
+			cardlist(md)
+			const headingClose = md.renderer.rules.heading_close
+			md.renderer.rules.heading_close = (tokens, index, options, env, self) => {
+				const decoration = tokens[index].tag === 'h2' ? '<span class="heading-wordmark" aria-hidden="true"></span>' : ''
+				return decoration + (headingClose?.(tokens, index, options, env, self) ?? self.renderToken(tokens, index, options))
+			}
+		},
+		languageAlias: { gitignore: 'text' },
+		math: true,
+		container: { tipLabel: '提示', warningLabel: '注意', dangerLabel: '警告', infoLabel: '信息', detailsLabel: '详细信息' },
+	},
+	transformPageData(page) {
+		const article = articles.find(item => item.source === page.relativePath || outputPath(item.url) === page.relativePath)
+		if (article) {
+			page.title = article.title
+			page.lastUpdated = article.updatedTime || undefined
+			Object.assign(page.frontmatter, { title: article.title, breadcrumbs: article.folders, categories: article.categories, tags: article.tags, articleHeader: !article.hasHeading, empty: article.empty })
+		}
+	},
+})

@@ -1,0 +1,69 @@
+.chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0 4px;
+	margin: -2px -4px;
+}
+
+.chips .chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	position: relative;
+	padding: 2px 4px;
+	border: 0;
+	border-radius: var(--wiki-radius-small);
+	background: transparent;
+	font-size: 12px;
+	font-weight: 400;
+	text-decoration: none;
+	color: var(--vp-c-text-2);
+	transition: color var(--wiki-duration), background var(--wiki-duration);
+}
+
+.chips .chip:hover,
+.chips .chip[aria-pressed="true"] {
+	background: var(--vp-c-brand-soft);
+	color: var(--vp-c-brand-1);
+}
+
+.chip-count {
+	opacity: 0.65;
+	font-size: 11px;
+}
+
+:root {
+	font-synthesis: style;
+	text-autospace: normal;
+	scrollbar-color: var(--vp-c-text-3) transparent;
+}
+
+code,
+pre {
+	text-autospace: no-autospace;
+}
+
+::selection {
+	background-color: var(--vp-c-brand-soft);
+}
+
+:where(a, button, summary, input):focus-visible {
+	outline: 2px solid var(--vp-c-brand-1);
+	outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	:root {
+		--wiki-duration: 0s;
+		scroll-behavior: auto;
+	}
+}
+
+.chips:empty {
+	display: none;
+}
+
+/* The search dialog already highlights the complete search bar on focus. */
+#localsearch-input:focus-visible {
+	outline: none;
+}

@@ -1,0 +1,44 @@
+{
+  "name": "ncepu-wiki",
+  "type": "module",
+  "version": "2.0.0",
+  "private": true,
+  "packageManager": "pnpm@11.24.0",
+  "license": "MIT",
+  "engines": {
+    "node": "^22.19 || ^24.11 || >=26",
+    "pnpm": ">=11"
+  },
+  "scripts": {
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "preview": "vitepress preview docs",
+    "typecheck": "vue-tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "tsx --test tests/*.test.ts",
+    "check": "pnpm typecheck && pnpm lint && pnpm test"
+  },
+  "dependencies": {
+    "@iconify-icons/ri": "^2.0.0",
+    "@iconify/vue": "^5.0.1",
+    "modern-screenshot": "^4.7.0",
+    "tippy.js": "^6.3.7",
+    "uqr": "^0.1.3",
+    "vue": "^3.5.42",
+    "vue-tippy": "^6.7.1"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^9.3.0",
+    "@types/node": "^22.19.0",
+    "@vitepress-plugin/markmap": "^1.3.1",
+    "@zinkawaii/eslint-config-css": "^0.5.1",
+    "eslint": "^10.9.1",
+    "gray-matter": "^4.0.3",
+    "markdown-it-mathjax3": "^4.3.2",
+    "tsx": "^4.20.0",
+    "typescript": "^6.0.3",
+    "vitepress": "2.0.0-alpha.20",
+    "vue-tsc": "^3.3.0"
+  }
+}

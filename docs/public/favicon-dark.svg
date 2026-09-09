@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1540 1760">
+<!-- 与 xupt logo.svg 同画布：1540 x 1760。
+     原图 88x88 为正方形，按 1540/88 = 17.5 等比放大后居中，
+     上下各留 110 的空白。
+     本文件为 logo.svg 的「暗色主题版」（对应 VitePress logoDark）：
+     原版为亮色主题用，本版整体提亮约 25%，以便在深色背景上清晰可见，
+     四层结构与几何坐标保持不变。 -->
+<g transform="translate(0 110) scale(17.5)">
+<!-- 第一层：最外深色外框（提亮） -->
+<g fill="#de9bb7">
+<rect x="13" y="13" width="62" height="62" />
+<rect x="13" y="13" width="62" height="62" transform="rotate(45 44 44)" />
+</g>
+<!-- 第二层：外圈浅粉色填充（提亮） -->
+<g fill="#fdedf3">
+<rect x="19" y="19" width="50" height="50" />
+<rect x="19" y="19" width="50" height="50" transform="rotate(45 44 44)" />
+</g>
+<!-- 第三层：内圈浅色轮廓线（提亮） -->
+<g fill="#f8cad8">
+<rect x="25" y="25" width="38" height="38" />
+<rect x="25" y="25" width="38" height="38" transform="rotate(45 44 44)" />
+</g>
+<!-- 第四层：最内层浅粉填充（提亮） -->
+<g fill="#fdedf3">
+<rect x="29" y="29" width="30" height="30" />
+<rect x="29" y="29" width="30" height="30" transform="rotate(45 44 44)" />
+</g>
+</g>
+</svg>
