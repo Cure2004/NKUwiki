@@ -62,7 +62,7 @@ const latest = [...data.articles].sort((a, b) => b.updatedTime - a.updatedTime |
 			</p>
 			<!-- 主要行动按钮：跳转新生指南；第二个链接前往文章分类索引页 /categories/ -->
 			<div class="hero-actions">
-				<a class="primary" href="/NKUwiki/pages/Preparation">阅读新生指南 <span aria-hidden="true">↗</span></a><a href="/NKUwiki-demo/categories/">浏览全部目录 →</a>
+				<a class="primary" href="/NKUwiki/pages/Preparation">阅读新生指南 <span aria-hidden="true">↗</span></a><a href="/NKUwiki/categories/">浏览全部目录 →</a>
 			</div>
 		</div>
 		<!-- Hero 右侧小卡片：校徽、校区范围、由 data loader 统计的条目总数、一句话定位 -->
@@ -86,7 +86,7 @@ const latest = [...data.articles].sort((a, b) => b.updatedTime - a.updatedTime |
 				<div class="topic-grid">
 					<!-- 动态专题卡片：v-for 遍历 topics 并解构出 [name, desc]；
 					href 优先使用 topicLinks 的 slug，映射不到的专题回退到贡献指南页 -->
-					<a v-for="[name, desc] in topics" :key="name" class="topic-card" :href="topicLinks[name] ? `/NKUwiki-demo/topics/${topicLinks[name]}/` : '/NKUwiki-demo/pages/BasicContribution/'">
+					<a v-for="[name, desc] in topics" :key="name" class="topic-card" :href="topicLinks[name] ? `/NKUwiki/topics/${topicLinks[name]}/` : '/NKUwiki/pages/BasicContribution/'">
 						<h3>{{ name }}</h3><p>{{ desc }}</p><span class="topic-arrow" aria-hidden="true">↗</span>
 					</a>
 					<!-- 友情链接作为一张特殊卡片排在网格末尾（community-card 样式），
