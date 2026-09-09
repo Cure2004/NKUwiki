@@ -78,9 +78,11 @@ export default defineConfig({
 			cardlist(md)
 			const headingClose = md.renderer.rules.heading_close
 			md.renderer.rules.heading_close = (tokens, index, options, env, self) => {
-				const decoration = tokens[index].tag === 'h2' ? '<span class="heading-wordmark" aria-hidden="true"></span>' : ''
-				return decoration + (headingClose?.(tokens, index, options, env, self) ?? self.renderToken(tokens, index, options))
-			}
+  				const original = headingClose?.(tokens, index, options, env, self) ?? self.renderToken(tokens, index, options)
+  				const decoration = tokens[index].tag === 'h2' && !original.includes('heading-wordmark') ? '<span class="heading-wordmark" aria-hidden="true"></span>' : ''
+  				return decoration + original
+}
+
 		},
 		languageAlias: { gitignore: 'text' },
 		math: true,
