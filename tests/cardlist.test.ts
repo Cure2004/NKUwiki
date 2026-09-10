@@ -19,7 +19,7 @@ test('card lists preserve rich cells, omit empty fields, and leave ordinary tabl
 
 test('all group and food rows reach the cards with no hidden overflow columns', async () => {
 	const md = await createMarkdownRenderer(process.cwd(), { config: cardlist })
-	for (const file of ['03.群汇总/01.同好群.md', '03.群汇总/02.老乡群.md', '03.群汇总/03.学生组织与社团名单.md']) {
+	for (const file of ['03.群汇总/01.兴趣群.md', '03.群汇总/02.老乡群.md', '03.群汇总/03.学生组织与社团.md', '03.群汇总/04.实验室.md']) {
 		const { content } = matter(readFileSync(`docs/${file}`, 'utf8').replaceAll('\r\n', '\n'))
 		const tables = [...content.matchAll(/::: cardlist[^\S\r\n]*\n([\s\S]*?)\n:::/g)]
 		let count = 0
