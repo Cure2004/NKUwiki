@@ -1,16 +1,33 @@
 <script setup lang="ts">
+import { withBase } from 'vitepress'
 import { computed, ref } from 'vue'
 import SiteIcon from './SiteIcon.vue'
 
-const props = defineProps<{ qq: string }>()
-const failed = ref(false)
-const avatar = computed(() => props.qq ? `https://p.qlogo.cn/gh/${props.qq}/${props.qq}/100/` : '')
+const props = defineProps<{ qq?: string, avatar?: string }>()
+const index = ref(0)
+const broken = ref(false)
+
+/** 候选头像按优先级排列：手动指定 > QQ 群号自动头像 */
+const candidates = computed(() => [...new Set([
+	props.avatar ? withBase(props.avatar) : '',
+	props.qq ? `https://p.qlogo.cn/gh/${props.qq}/${props.qq}/100/` : '',
+].filter(Boolean))])
+
+const src = computed(() => broken.value ? '' : candidates.value[index.value] || '')
+
+/** 上一级加载失败自动顺延到下一级，全部失败才显示默认图标 */
+function onError() {
+	if (index.value + 1 < candidates.value.length)
+		index.value++
+	else
+		broken.value = true
+}
 </script>
 
 <template>
 <div class="group-avatar" aria-hidden="true">
-	<img v-if="avatar && !failed" class="card-blur" :src="avatar" alt="" loading="lazy" @error="failed = true">
-	<img v-if="avatar && !failed" class="card-avatar" :src="avatar" alt="" loading="lazy" @error="failed = true">
+	<img v-if="src" class="card-blur" :src="src" alt="" loading="lazy" @error="onError">
+	<img v-if="src" class="card-avatar" :src="src" alt="" loading="lazy" @error="onError">
 	<span v-else class="card-avatar card-avatar-fallback"><SiteIcon /></span>
 </div>
 </template>

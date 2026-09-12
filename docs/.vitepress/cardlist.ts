@@ -2,6 +2,13 @@ import type { MarkdownRenderer } from 'vitepress'
 import qqIcon from '@iconify-icons/ri/qq-fill'
 import kitchen from '@iconify-icons/ri/restaurant-line'
 
+const plainText = (cell = '') => cell.replace(/<[^>]*>/g, '').trim()
+/** 从单元格取图片地址：`![](...)` 渲染出的 <img>、外链、或裸路径均可 */
+const pickImageSrc = (cell = '') =>
+	cell.match(/<img\b[^>]*?\ssrc="([^"]+)"/i)?.[1]
+	|| cell.match(/<a\b[^>]*?\shref="([^"]+)"/i)?.[1]
+	|| plainText(cell)
+
 /** Keep editorial data in Markdown tables while rendering semantic cards. */
 export function cardlist(md: MarkdownRenderer) {
 	md.block.ruler.before('fence', 'cardlist', (state, start, end, silent) => {
@@ -21,6 +28,7 @@ export function cardlist(md: MarkdownRenderer) {
 		let isGroup = false
 		let isHeader = false
 		let inTable = false
+		let avatarIndex = -1
 		for (const token of tokens) {
 			switch (token.type) {
 				case 'table_open':
@@ -45,13 +53,17 @@ export function cardlist(md: MarkdownRenderer) {
 					if (isHeader) {
 						headers = cells
 						isGroup = headers.some(header => /群号|加入方式|二维码/.test(header))
+						avatarIndex = headers.findIndex(header => /头像/.test(header))
 						html[html.length - 1] = `<div class="campus-card-grid ${isGroup ? 'group-cards' : 'food-cards'}" role="list">`
 						break
 					}
 					html.push('<article class="campus-card" role="listitem">')
 					if (isGroup) {
 						const qq = cells[1]?.replace(/<[^>]*>/g, '').match(/\b\d{5,12}\b/)?.[0] || ''
-						html.push(`<GroupAvatar qq="${qq}" />`)
+						const avatar = avatarIndex > -1 ? pickImageSrc(cells[avatarIndex]) : ''
+						html.push(avatar
+							? `<GroupAvatar qq="${qq}" avatar="${avatar}" />`
+							: `<GroupAvatar qq="${qq}" />`)
 					}
 					else {
 						html.push(`<span class="food-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">${kitchen.body}</svg></span>`)
@@ -59,6 +71,8 @@ export function cardlist(md: MarkdownRenderer) {
 					html.push(`<h3 class="campus-card-title">${cells[0]}</h3>`)
 					for (let i = 1; i < cells.length; i++) {
 						if (!cells[i].trim())
+							continue
+						if (i === avatarIndex) 
 							continue
 						const label = headers[i] || ''
 						const value = cells[i].replace(/<QrCode\b/g, '<HoverMedia kind="qr"')
