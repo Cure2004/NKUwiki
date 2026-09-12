@@ -11,7 +11,7 @@ test('existing article URLs are unique and all articles appear once in the direc
 	assert.ok(articles.length > 20)
 	const flatten = (items: DirectoryItem[]): string[] => items.flatMap(item => item.link ? [item.link] : flatten(item.items || []))
 	assert.deepEqual(flatten(buildTree(articles)).sort(), articles.map(article => article.url).sort())
-	assert.equal(articles.find(article => article.title === '新生-入学准备')!.url, '/pages/Preparation')
+	assert.equal(articles.find(article => article.title === '入学准备')!.url, '/pages/Preparation')
 	assert.equal(articles.find(article => article.title === '友情链接')!.url, '/pages/FriendshipLinks/')
 	assert.equal(outputPath('/pages/Preparation'), 'pages/Preparation.md')
 	assert.equal(outputPath('/pages/FriendshipLinks/'), 'pages/FriendshipLinks/index.md')
@@ -19,7 +19,7 @@ test('existing article URLs are unique and all articles appear once in the direc
 
 test('category counts include both directory ancestors and legacy categories without duplicates', () => {
 	const { articles, tags, categories } = loadCatalog()
-	const article = articles.find(article => article.title === '新生-入学准备')!
+	const article = articles.find(article => article.title === '入学准备')!
 	assert.ok(article.categories.includes('新生入学'))
 	assert.equal(article.categories.filter(category => category === '新生入学').length, 1)
 	for (const [field, counts] of [['tags', tags], ['categories', categories]] as const) {
