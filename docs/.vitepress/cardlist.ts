@@ -4,10 +4,11 @@ import kitchen from '@iconify-icons/ri/restaurant-line'
 
 const plainText = (cell = '') => cell.replace(/<[^>]*>/g, '').trim()
 /** 从单元格取图片地址：`![](...)` 渲染出的 <img>、外链、或裸路径均可 */
-const pickImageSrc = (cell = '') =>
-	cell.match(/<img\b[^>]*?\ssrc="([^"]+)"/i)?.[1]
-	|| cell.match(/<a\b[^>]*?\shref="([^"]+)"/i)?.[1]
-	|| plainText(cell)
+function pickImageSrc(cell = '') {
+	return cell.match(/<img\b[^>]*?\ssrc="([^"]+)"/i)?.[1]
+		|| cell.match(/<a\b[^>]*?\shref="([^"]+)"/i)?.[1]
+		|| plainText(cell)
+}
 
 /** Keep editorial data in Markdown tables while rendering semantic cards. */
 export function cardlist(md: MarkdownRenderer) {
@@ -72,7 +73,7 @@ export function cardlist(md: MarkdownRenderer) {
 					for (let i = 1; i < cells.length; i++) {
 						if (!cells[i].trim())
 							continue
-						if (i === avatarIndex) 
+						if (i === avatarIndex)
 							continue
 						const label = headers[i] || ''
 						const value = cells[i].replace(/<QrCode\b/g, '<HoverMedia kind="qr"')
