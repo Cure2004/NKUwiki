@@ -25,6 +25,7 @@ export default defineConfig({
 	description: '南开大学学生共同维护的非官方校园知识库。',
 	cleanUrls: true,
 	lastUpdated: true,
+	srcExclude: ['activity/**'],
 	rewrites: source => rewrites.get(source) || source,
 	head: [
 		['link', { rel: 'stylesheet', href: 'https://s4.zstatic.net/npm/inter-ui@4.1.1/inter-variable.css' }],
