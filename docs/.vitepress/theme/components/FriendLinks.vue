@@ -5,7 +5,7 @@ import HoverMedia from './HoverMedia.vue'
 // 本站内的图片路径（/img/...）统一经 withBase 拼接 base；外部链接原样保留。
 const links = [
 	{ name: '南开大学', image: '/img/10/10/南开大学WX头像.jpg', url: 'http://weixin.qq.com/r/mp/-3VFXTHEM2xMrXU_9yDt', description: '允公允能，日新月异。这里是南开大学官微，百年南开欢迎你~', tag: '校园媒体', qr: true },
-	{ name: 'NKstudy', image: '/img/10/10/NK-study头像.jpg', url: '/img/10/10/NK-study内测群.png', description: 'NKstudy内测群', tag: '项目群组', qr: true },
+	{ name: 'NKUstudy', image: '/img/10/10/NK-study头像.jpg', url: '/img/10/10/NK-study内测群.png', description: 'NKUStudy 是一个面向课程资料整理、课程导航与教师评价的轻量级站点，旨在帮助同学更方便地查找、整理和分享课程相关信息。', tag: '项目群组', preview: true },
 	{ name: 'NCEPUwiki', image: '/img/10/10/NCEPUwiki头像.svg', url: 'https://wiki.ncepuinfo.cc/', description: '华北电力大学学生共同维护的非官方校园知识库', tag: '兄弟院校' },
 ].map(link => ({ ...link, image: withBase(link.image), url: link.url.startsWith('/') ? withBase(link.url) : link.url }))
 </script>
