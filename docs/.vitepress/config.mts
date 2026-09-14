@@ -7,7 +7,7 @@ import { buildTree, outputPath, scanArticles } from './catalog.ts'
 import { repoUrl, siteUrl } from './site.ts'
 
 const articles = scanArticles()
-const base = '/NKUwiki/'
+const base = ''
 function topicMatch(slug: string, ...folders: string[]) {
 	const escape = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 	const paths = articles.filter(article => folders.includes(article.folders[0])).flatMap(article => [article.url.replace(/\/$/, ''), `/${article.source.replace(/\.md$/, '')}`]).map(escape)
