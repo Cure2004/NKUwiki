@@ -24,7 +24,7 @@ export default defineConfig({
 	title: 'NKUwiki',
 	description: '南开大学学生共同维护的非官方校园知识库。',
 	cleanUrls: true,
-	lastUpdated: true,
+	lastUpdated: false,
 	srcExclude: ['activity/**'],
 	rewrites: source => rewrites.get(source) || source,
 	head: [
@@ -99,7 +99,7 @@ export default defineConfig({
 		const article = articles.find(item => item.source === page.relativePath || outputPath(item.url) === page.relativePath)
 		if (article) {
 			page.title = article.title
-			page.lastUpdated = article.updatedTime || undefined
+			page.lastUpdated = article.lastUpdatedTime || undefined
 			Object.assign(page.frontmatter, { title: article.title, breadcrumbs: article.folders, categories: article.categories, tags: article.tags, articleHeader: !article.hasHeading, empty: article.empty })
 		}
 	},
